@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+/build
+/test_shapes_2d
+/input_shapes_3d
+/lib
+/output
+/tmp_cmake

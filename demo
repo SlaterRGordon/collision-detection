@@ -1,0 +1,50 @@
+#! /usr/bin/env bash
+
+# Print an error message and exit.
+panic()
+{
+	echo "ERROR: $@"
+	exit 1
+}
+
+# Get the directory in which the currently running script is located.
+cmd_dir=$(dirname "$0") || panic "cannot determine command directory"
+
+mkdir -p $cmd_dir/output
+mkdir -p $cmd_dir/input_shapes_2d
+mkdir -p $cmd_dir/input_shapes_3d
+touch $cmd_dir/output/detect_no_collision.txt
+touch $cmd_dir/output/detect_collision.txt
+touch $cmd_dir/output/output_2d.txt
+touch $cmd_dir/output/output_3d.txt
+
+detect_no_collision_2d_program="$cmd_dir/detect_collision --shape1 $cmd_dir/shapes_2d/no_collision_1.off --shape2 $cmd_dir/shapes_2d/no_collision_2.off --out $cmd_dir/output/detect_no_collision_2d.txt"
+detect_collision_2d_program="$cmd_dir/detect_collision --shape1 $cmd_dir/shapes_2d/collision_1.off --shape2 $cmd_dir/shapes_2d/collision_2.off --out $cmd_dir/output/detect_collision_2d.txt"
+detect_no_collision_3d_program="$cmd_dir/detect_collision --shape1 $cmd_dir/shapes_3d/no_collision_1.off --shape2 $cmd_dir/shapes_3d/no_collision_2.off --out $cmd_dir/output/detect_no_collision_3d.txt"
+detect_collision_3d_program="$cmd_dir/detect_collision --shape1 $cmd_dir/shapes_3d/collision_1.off --shape2 $cmd_dir/shapes_3d/collision_2.off --out $cmd_dir/output/detect_collision_3d.txt"
+test_2d_program="$cmd_dir/test_shapes_2d --in $cmd_dir/input_shapes_2d/ --out $cmd_dir/output/output_2d.txt"
+test_3d_program="$cmd_dir/test_shapes_3d --root_dir $cmd_dir/ --out $cmd_dir/output/output_3d.txt"
+
+echo "Running detect_no_collision_2d program"
+$detect_no_collision_2d_program || panic "detect_no_collision_2d program failed"
+echo "Results written to $cmd_dir/output/detect_no_collision_2d.txt"
+
+echo "Running detect_collision_2d program"
+$detect_collision_2d_program || panic "detect_collision_2d program failed"
+echo "Results written to $cmd_dir/output/detect_collision_2d.txt"
+
+echo "Running detect_no_collision_3d program"
+$detect_no_collision_3d_program || panic "detect_no_collision_3d program failed"
+echo "Results written to $cmd_dir/output/detect_no_collision_3d.txt"
+
+echo "Running detect_collision_3d program"
+$detect_collision_3d_program || panic "detect_collision_3d program failed"
+echo "Results written to $cmd_dir/output/detect_collision_3d.txt"
+
+echo "Running test_shapes_2d program"
+$test_2d_program || panic "test_shapes_2d program failed"
+echo "Results written to $cmd_dir/output/output_2d.txt"
+
+echo "Running test_shapes_3d program"
+$test_3d_program || panic "test_shapes_3d program failed"
+echo "Results written to $cmd_dir/output/output_3d.txt"
